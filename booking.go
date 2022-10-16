@@ -13,7 +13,11 @@ type Booking struct {
 func (b *Booking) exportValues() []string {
 	output := make([]string, len(columnNames))
 	for i, col := range b.values {
-		output[i] = col.convert()
+		if col != nil {
+			output[i] = col.convert()
+		} else {
+			output[i] = ""
+		}
 	}
 
 	return output
