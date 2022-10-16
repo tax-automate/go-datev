@@ -38,59 +38,67 @@ func (bb *BookingBuilder) setValue(data bookingColumn) *BookingBuilder {
 	return bb
 }
 
-func (bb *BookingBuilder) SetDate(t time.Time) *BookingBuilder {
-	return bb.setValue(date{value: t})
-}
-
 func (bb *BookingBuilder) SetAmount(n float64) *BookingBuilder {
 	if n > 0 {
 		bb.b.setValue(sollHaben{"S"})
 	} else {
 		bb.b.setValue(sollHaben{"H"})
 	}
-	return bb.setValue(amount{value: math.Abs(n)})
+	return bb.setValue(amount{math.Abs(n)})
 }
 
-func (bb *BookingBuilder) SetCAccount(n int) *BookingBuilder {
-	panic("Not implemented yet!")
+func (bb *BookingBuilder) SetCurrency(curr string, _course float64) *BookingBuilder {
+	bb.b.setValue(currency{curr})
+	bb.b.setValue(course{_course})
+	return bb
 }
 
 func (bb *BookingBuilder) SetAccount(n int) *BookingBuilder {
-	panic("Not implemented yet!")
+	return bb.setValue(account{n})
 }
 
-func (bb *BookingBuilder) SetText(s string) *BookingBuilder {
-	panic("Not implemented yet!")
-}
-
-func (bb *BookingBuilder) SetCurrency(curr string, course float64) *BookingBuilder {
-	panic("Not implemented yet!")
-}
-
-func (bb *BookingBuilder) SetVatId(s string) *BookingBuilder {
-	panic("Not implemented yet!")
-}
-
-func (bb *BookingBuilder) SetEuInformation(s string, n float64) *BookingBuilder {
-	panic("Not implemented yet!")
-}
-
-func (bb *BookingBuilder) SetVatIdOrigin(s string) *BookingBuilder {
-	panic("Not implemented yet!")
-}
-
-func (bb *BookingBuilder) SetEuInformationOrigin(s string, n float64) *BookingBuilder {
-	panic("Not implemented yet!")
+func (bb *BookingBuilder) SetCAccount(n int) *BookingBuilder {
+	return bb.setValue(cAccount{n})
 }
 
 func (bb *BookingBuilder) SetBuKey(n int) *BookingBuilder {
-	panic("Not implemented yet!")
+	return bb.setValue(buKey{n})
+}
+
+func (bb *BookingBuilder) SetDate(t time.Time) *BookingBuilder {
+	return bb.setValue(date{value: t})
 }
 
 func (bb *BookingBuilder) SetDocField(s string) *BookingBuilder {
-	panic("Not implemented yet!")
+	return bb.setValue(docField{s})
+}
+
+func (bb *BookingBuilder) SetText(s string) *BookingBuilder {
+	return bb.setValue(text{s})
 }
 
 func (bb *BookingBuilder) SetKOST(n int) *BookingBuilder {
-	panic("Not implemented yet!")
+	return bb.setValue(kost{n})
+}
+
+func (bb *BookingBuilder) SetVatID(s string) *BookingBuilder {
+	return bb.setValue(originVatIDOrCountry{s})
+}
+
+func (bb *BookingBuilder) SetDestinationEuInformation(countryCode string, rate float64) *BookingBuilder {
+	if countryCode == "GR" {
+		countryCode = "EL"
+	}
+	bb.b.setValue(destinationVatIDOrCountry{countryCode})
+	bb.b.setValue(destinationVatRate{rate})
+	return bb
+}
+
+func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float64) *BookingBuilder {
+	if countryCode == "GR" {
+		countryCode = "EL"
+	}
+	bb.b.setValue(originVatIDOrCountry{countryCode})
+	bb.b.setValue(originVatRate{rate})
+	return bb
 }
