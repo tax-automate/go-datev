@@ -1,9 +1,13 @@
 package datev
 
 import (
+	"errors"
+	"fmt"
 	"regexp"
 	"strings"
 )
+
+var tempEUCountries = getEUCountries()
 
 // IsValidVatID check if given string is a valid VatID.
 // see https://de.wikipedia.org/wiki/Umsatzsteuer-Identifikationsnummer
@@ -41,4 +45,30 @@ func IsValidVatID(vatID string) bool {
 	pattern := regexp.MustCompile(strings.Join(countries, "|"))
 
 	return pattern.MatchString(vatID)
+}
+
+func validateVatIDOrCountry(value string) error {
+	if value == "" {
+		return nil
+	}
+
+	if len(value) == 2 {
+		if _, ok := tempEUCountries[value]; !ok {
+			return fmt.Errorf("%q is not a valid EU-Country", value)
+		}
+		return nil
+	}
+
+	if !IsValidVatID(value) {
+		return fmt.Errorf("given vatID %q is not valid", value)
+	}
+
+	return nil
+}
+
+func validateVatRate(n float64) error {
+	if n <= 0 {
+		return errors.New("EU-Steuersatz muss größer als 0 sein")
+	}
+	return nil
 }

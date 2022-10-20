@@ -1,16 +1,28 @@
 package datev
 
 import (
+	"encoding/csv"
 	"math"
 	"time"
 )
 
+// ErrorMap stores errors that occurs while settings values with datev column index as key
+type ErrorMap map[int]string
+
+func (em ErrorMap) ExportToCsv(writer *csv.Writer) {
+	for k, v := range em {
+		s := []string{columnNames[k-1], v + "\n"}
+		_ = writer.Write(s)
+	}
+}
+
 type BookingBuilder struct {
-	b *Booking
+	b    *Booking
+	errs ErrorMap
 }
 
 func NewBookingBuilder() *BookingBuilder {
-	return &BookingBuilder{b: newBooking()}
+	return &BookingBuilder{b: newBooking(), errs: make(ErrorMap, 0)}
 }
 
 // SetMinValues is a helper function to set minimal attributes to Booking
@@ -25,15 +37,20 @@ func (bb *BookingBuilder) SetMinValues(date time.Time, amount float64, cAccount 
 	return bb
 }
 
-func (bb *BookingBuilder) Build() Booking {
+func (bb *BookingBuilder) Build() (Booking, ErrorMap) {
 	defer func() {
-		// after returning the booking, set booking to empty values
+		// after returning the booking, set booking and errors to empty values
 		bb.b = newBooking()
+		bb.errs = make(ErrorMap, 0)
 	}()
-	return *bb.b
+	return *bb.b, bb.errs
 }
 
 func (bb *BookingBuilder) setValue(data bookingColumn) *BookingBuilder {
+	if err := data.validate(); err != nil {
+		bb.errs[data.index()] = err.Error()
+		return bb
+	}
 	bb.b.setValue(data)
 	return bb
 }
@@ -86,18 +103,12 @@ func (bb *BookingBuilder) SetVatID(s string) *BookingBuilder {
 }
 
 func (bb *BookingBuilder) SetDestinationEuInformation(countryCode string, rate float64) *BookingBuilder {
-	if countryCode == "GR" {
-		countryCode = "EL"
-	}
 	bb.b.setValue(destinationVatIDOrCountry{countryCode})
 	bb.b.setValue(destinationVatRate{rate})
 	return bb
 }
 
 func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float64) *BookingBuilder {
-	if countryCode == "GR" {
-		countryCode = "EL"
-	}
 	bb.b.setValue(originVatIDOrCountry{countryCode})
 	bb.b.setValue(originVatRate{rate})
 	return bb

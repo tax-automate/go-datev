@@ -45,8 +45,23 @@ func (e Exporter) CreateExportFile(bookings []Booking, fileName string, cfg Expo
 	writer := csv.NewWriter(os.Stdout)
 	writer.Comma = ';'
 
+	// Header
+	err := writer.Write(e.createHeaderRow(fileName))
+	if err != nil {
+		return fmt.Errorf("error while creating header row -> %q", err.Error())
+	}
+
+	// column names
+	err = writer.Write(columnNames)
+	if err != nil {
+		return fmt.Errorf("error while creating columns -> %q", err.Error())
+	}
+	// bookings
 	for _, booking := range bookings {
-		writer.Write(booking.exportValues())
+		err = writer.Write(booking.exportValues())
+		if err != nil {
+			return fmt.Errorf("error %q while creating booking with value %v", err.Error(), booking.String())
+		}
 	}
 
 	return nil
