@@ -1,6 +1,8 @@
 package datev
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type bookingColumn interface {
 	index() int
@@ -8,8 +10,27 @@ type bookingColumn interface {
 	convert() string
 }
 
+// errorMap stores errors that occurs while settings values with datev column index as key
+type errorMap map[int]string
+
+func (em errorMap) errors() []string {
+	s := make([]string, len(em))
+	i := 0
+	for k, v := range em {
+		s[i] = fmt.Sprintf("%s -> %s", columnNames[k-1], v)
+		i += 1
+	}
+
+	return s
+}
+
+func (em errorMap) HasErrors() bool {
+	return len(em) == 0
+}
+
 type Booking struct {
 	values []bookingColumn
+	errs   errorMap
 }
 
 func (b *Booking) String() string {
@@ -26,8 +47,6 @@ func (b *Booking) exportValues() []string {
 	for i, col := range b.values {
 		if col != nil {
 			output[i] = col.convert()
-		} else {
-			output[i] = ""
 		}
 	}
 
@@ -35,10 +54,17 @@ func (b *Booking) exportValues() []string {
 }
 
 func newBooking() *Booking {
-	values := make([]bookingColumn, len(columnNames))
-	return &Booking{values: values}
+	return &Booking{
+		values: make([]bookingColumn, len(columnNames)),
+		errs:   make(errorMap, 0),
+	}
 }
 
-func (b *Booking) setValue(value bookingColumn) {
-	b.values[value.index()] = value
+func (b *Booking) setValue(data bookingColumn) {
+	// if data isn't valid, we store this information into an errorMap
+	if err := data.validate(); err != nil {
+		b.errs[data.index()] = err.Error()
+	}
+
+	b.values[data.index()-1] = data // index - 1, because we create []bookingColumns with len of columns in DATEV-Format
 }
