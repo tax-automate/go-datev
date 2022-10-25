@@ -68,3 +68,7 @@ func (b *Booking) setValue(data bookingColumn) {
 
 	b.values[data.index()-1] = data // index - 1, because we create []bookingColumns with len of columns in DATEV-Format
 }
+
+func (b *Booking) IsEqual(other Booking) bool {
+	return b.String() == other.String()
+}
