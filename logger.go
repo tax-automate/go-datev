@@ -5,7 +5,9 @@ type BookingLogger struct {
 }
 
 func NewBookingLogger() *BookingLogger {
-	return &BookingLogger{}
+	return &BookingLogger{
+		values: make(map[int][]string, 0),
+	}
 }
 
 func (lgr *BookingLogger) addError(index int, errs []string) {

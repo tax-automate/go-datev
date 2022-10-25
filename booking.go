@@ -25,7 +25,7 @@ func (em errorMap) errors() []string {
 }
 
 func (em errorMap) HasErrors() bool {
-	return len(em) == 0
+	return len(em) != 0
 }
 
 type Booking struct {
