@@ -36,7 +36,9 @@ type Booking struct {
 func (b *Booking) String() string {
 	s := ""
 	for _, col := range b.values {
-		s += fmt.Sprintf("%3d - %-40s %s -> %s\n", col.index(), columnNames[col.index()-1], "", col.convert())
+		if col != nil {
+			s += fmt.Sprintf("%3d - %-40s %s -> %s\n", col.index(), columnNames[col.index()-1], "", col.convert())
+		}
 	}
 
 	return s
