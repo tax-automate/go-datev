@@ -1,11 +1,12 @@
 package datev
 
 const (
-	BuKeyNotTaxable    int = 191
-	BuKeyReverseCharge int = 270
-	BuKeyOSS           int = 280
-	BuKeyUSt7          int = 102
-	BuKeyUSt19         int = 101
+	BuKeyNotTaxable          int = 191
+	BuKeyReverseCharge       int = 270
+	BuKeyOSS                 int = 280
+	BuKeyUSt7                int = 102
+	BuKeyUSt19               int = 101
+	BuKeyDeactivateAutomatic int = 40
 )
 
 func BuKeyByVatRate(rate float64) int {
