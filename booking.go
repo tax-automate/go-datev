@@ -74,3 +74,7 @@ func (b *Booking) setValue(data bookingColumn) {
 func (b *Booking) IsEqual(other Booking) bool {
 	return b.String() == other.String()
 }
+
+func (b *Booking) IsEmpty() bool {
+	return b.String() == newBooking().String()
+}
