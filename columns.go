@@ -102,9 +102,6 @@ func (a account) index() int {
 }
 
 func (a account) validate() error {
-	if a.value <= 0 {
-		return fmt.Errorf("%d is kein valides Konto")
-	}
 	return nil
 }
 
@@ -122,9 +119,6 @@ func (a cAccount) index() int {
 }
 
 func (a cAccount) validate() error {
-	if a.value <= 0 {
-		return fmt.Errorf("%d is kein valides Gegenkonto")
-	}
 	return nil
 }
 
@@ -212,16 +206,10 @@ func (k kost) index() int {
 }
 
 func (k kost) validate() error {
-	if k.value < 0 {
-		return fmt.Errorf("%d is not a valid KOST", k.value)
-	}
 	return nil
 }
 
 func (k kost) convert() string {
-	if k.value == 0 {
-		return ""
-	}
 	return fmt.Sprintf("%d", k.value)
 }
 
