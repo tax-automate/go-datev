@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -36,17 +37,33 @@ type Exporter struct {
 	period   Period
 }
 
+func NewExporter(filePath string, cfg ExporterConfig, period Period) Exporter {
+	return Exporter{filePath: filePath, cfg: cfg, period: period}
+}
+
 type Period struct {
 	Begin time.Time
 	End   time.Time
 }
 
-func (e Exporter) CreateExportFile(bookings []Booking, fileName string, cfg ExporterConfig) error {
-	writer := csv.NewWriter(os.Stdout)
+func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
+	fileName = fmt.Sprintf("EXTF_%s.csv", fileName)
+	path := filepath.Join(e.filePath, fileName)
+
+	f, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	writer := csv.NewWriter(f)
+	defer func() {
+		writer.Flush()
+		f.Close()
+	}()
 	writer.Comma = ';'
 
 	// Header
-	err := writer.Write(e.createHeaderRow(fileName))
+	err = writer.Write(e.createHeaderRow(fileName))
 	if err != nil {
 		return fmt.Errorf("error while creating header row -> %q", err.Error())
 	}
