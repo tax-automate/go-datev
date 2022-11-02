@@ -94,12 +94,18 @@ func (bb *BookingBuilder) SetVatID(s string) *BookingBuilder {
 }
 
 func (bb *BookingBuilder) SetDestinationEuInformation(countryCode string, rate float64) *BookingBuilder {
+	if rate < 1 {
+		rate *= 100
+	}
 	bb.b.setValue(destinationVatIDOrCountry{countryCode})
 	bb.b.setValue(destinationVatRate{rate})
 	return bb
 }
 
 func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float64) *BookingBuilder {
+	if rate < 1 {
+		rate *= 100
+	}
 	bb.b.setValue(originVatIDOrCountry{countryCode})
 	bb.b.setValue(originVatRate{rate})
 	return bb
