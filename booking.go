@@ -8,6 +8,7 @@ type bookingColumn interface {
 	index() int
 	validate() error
 	convert() string
+	_value() interface{}
 }
 
 // errorMap stores errors that occurs while settings values with datev column index as key

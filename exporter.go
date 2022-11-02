@@ -3,6 +3,7 @@ package datev
 import (
 	"encoding/csv"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"time"
@@ -23,12 +24,13 @@ func (b _bool) String() string {
 }
 
 type ExporterConfig struct {
-	ConsultantNumber int
-	ClientNumber     int
-	FinanceYear      int
-	SKL              int
-	SKR              int
-	Fixation         _bool
+	ConsultantNumber       int
+	ClientNumber           int
+	FinanceYear            int
+	SKL                    int
+	SKR                    int
+	Fixation               _bool
+	SplitBookingsByDebitor bool
 }
 
 type Exporter struct {
@@ -46,6 +48,37 @@ type Period struct {
 	End   time.Time
 }
 
+func (e Exporter) CreateExport(bookings []Booking, fileName string) error {
+	if !e.cfg.SplitBookingsByDebitor {
+		return e.CreateExportFile(bookings, fileName)
+	}
+
+	debitorBookings := make([]Booking, 0)
+	otherBookings := make([]Booking, 0)
+	minDebitorAcc := int(math.Pow(10, float64(e.cfg.SKL)))
+	for _, booking := range bookings {
+		acc := booking.values[6]._value().(int)
+		cAcc := booking.values[7]._value().(int)
+
+		if acc >= minDebitorAcc || cAcc >= minDebitorAcc {
+			debitorBookings = append(debitorBookings, booking)
+		} else {
+			otherBookings = append(otherBookings, booking)
+		}
+	}
+
+	err := e.CreateExportFile(debitorBookings, fileName+" Debitoren")
+	if err != nil {
+		return err
+	}
+
+	err = e.CreateExportFile(otherBookings, fileName)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 	fileName = fmt.Sprintf("EXTF_%s.csv", fileName)
 	path := filepath.Join(e.filePath, fileName)
@@ -58,7 +91,7 @@ func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 	writer := csv.NewWriter(f)
 	defer func() {
 		writer.Flush()
-		f.Close()
+		_ = f.Close()
 	}()
 	writer.Comma = ';'
 
