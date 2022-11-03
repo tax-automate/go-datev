@@ -26,7 +26,6 @@ func (b _bool) String() string {
 type ExporterConfig struct {
 	ConsultantNumber       int
 	ClientNumber           int
-	FinanceYear            int
 	SKL                    int
 	SKR                    int
 	Fixation               _bool
@@ -34,13 +33,19 @@ type ExporterConfig struct {
 }
 
 type Exporter struct {
-	filePath string
-	cfg      ExporterConfig
-	period   Period
+	filePath    string
+	cfg         ExporterConfig
+	financeYear time.Time
+	period      Period
 }
 
 func NewExporter(filePath string, cfg ExporterConfig, period Period) Exporter {
-	return Exporter{filePath: filePath, cfg: cfg, period: period}
+	financeYear := time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
+	return Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear}
+}
+
+func (e Exporter) SetDeviatingFinanceYear(year, month int) {
+	e.financeYear = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 }
 
 type Period struct {
@@ -136,10 +141,10 @@ func (e Exporter) createHeaderRow(fileName string) []string {
 		"RE",         // origin
 		exportedFrom, // exported from
 		"",           // imported from (must be empty)
-		fmt.Sprintf("%d", e.cfg.ConsultantNumber), // Beraternummer
-		fmt.Sprintf("%d", e.cfg.ClientNumber),     // Mandantennummer
-		fmt.Sprintf("%d", e.cfg.FinanceYear),      // Finanzjahr
-		fmt.Sprintf("%d", e.cfg.SKL),              // SKL
+		fmt.Sprintf("%d", e.cfg.ConsultantNumber),                                               // Beraternummer
+		fmt.Sprintf("%d", e.cfg.ClientNumber),                                                   // Mandantennummer
+		fmt.Sprintf("%d%d%d", e.financeYear.Year(), e.financeYear.Month(), e.financeYear.Day()), // Finanzjahr
+		fmt.Sprintf("%d", e.cfg.SKL),                                                            // SKL
 		fmt.Sprintf("%d%02d%02d", e.period.Begin.Year(), e.period.Begin.Month(), e.period.Begin.Day()),
 		fmt.Sprintf("%d%02d%02d", e.period.End.Year(), e.period.End.Month(), e.period.End.Day()),
 		fileName,
