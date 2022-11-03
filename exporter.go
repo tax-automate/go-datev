@@ -87,6 +87,11 @@ func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 	if err != nil {
 		return err
 	}
+	bomUtf8 := []byte{0xEF, 0xBB, 0xBF}
+	_, err = f.Write(bomUtf8)
+	if err != nil {
+		return err
+	}
 
 	writer := csv.NewWriter(f)
 	defer func() {
