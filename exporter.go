@@ -62,8 +62,8 @@ func (e Exporter) CreateExport(bookings []Booking, fileName string) error {
 	otherBookings := make([]Booking, 0)
 	minDebitorAcc := int(math.Pow(10, float64(e.cfg.SKL)))
 	for _, booking := range bookings {
-		acc := booking.values[6]._value().(int)
-		cAcc := booking.values[7]._value().(int)
+		acc := booking.values[6].(account).value
+		cAcc := booking.values[7].(cAccount).value
 
 		if acc >= minDebitorAcc || cAcc >= minDebitorAcc {
 			debitorBookings = append(debitorBookings, booking)

@@ -17,10 +17,6 @@ type amount struct {
 	value float64
 }
 
-func (d amount) _value() interface{} {
-	return d.value
-}
-
 func (d amount) index() int {
 	return 1
 }
@@ -39,10 +35,6 @@ func (d amount) convert() string {
 // 2 - Soll/Haben-Kennzeichen
 type sollHaben struct {
 	value string
-}
-
-func (s sollHaben) _value() interface{} {
-	return s.value
 }
 
 func (s sollHaben) index() int {
@@ -65,10 +57,6 @@ type currency struct {
 	value string
 }
 
-func (c currency) _value() interface{} {
-	return c.value
-}
-
 func (c currency) index() int {
 	return 3
 }
@@ -87,10 +75,6 @@ func (c currency) convert() string {
 // 4 - course -> Kurs
 type course struct {
 	value float64
-}
-
-func (c course) _value() interface{} {
-	return c.value
 }
 
 func (c course) index() int {
@@ -113,10 +97,6 @@ type account struct {
 	value int
 }
 
-func (a account) _value() interface{} {
-	return a.value
-}
-
 func (a account) index() int {
 	return 7
 }
@@ -132,10 +112,6 @@ func (a account) convert() string {
 // 8 - cAccount -> Gegenkonto (ohne BU-Schlüssel)
 type cAccount struct {
 	value int
-}
-
-func (a cAccount) _value() interface{} {
-	return a.value
 }
 
 func (a cAccount) index() int {
@@ -155,10 +131,6 @@ type buKey struct {
 	value int
 }
 
-func (b buKey) _value() interface{} {
-	return b.value
-}
-
 func (b buKey) index() int {
 	return 9
 }
@@ -174,10 +146,6 @@ func (b buKey) convert() string {
 // 10 - date -> Belegdatum
 type date struct {
 	value time.Time
-}
-
-func (d date) _value() interface{} {
-	return d.value
 }
 
 func (d date) index() int {
@@ -199,10 +167,6 @@ type docField struct {
 	value string
 }
 
-func (d docField) _value() interface{} {
-	return d.value
-}
-
 func (d docField) index() int {
 	return 11
 }
@@ -218,10 +182,6 @@ func (d docField) convert() string {
 // 14 - text -> Buchungstext
 type text struct {
 	value string
-}
-
-func (t text) _value() interface{} {
-	return t.value
 }
 
 func (t text) index() int {
@@ -241,10 +201,6 @@ type kost struct {
 	value int
 }
 
-func (k kost) _value() interface{} {
-	return k.value
-}
-
 func (k kost) index() int {
 	return 37
 }
@@ -260,10 +216,6 @@ func (k kost) convert() string {
 // 40 - destinationVatIDOrCountry -> EU-Land u. UStID (Bestimmung)
 type destinationVatIDOrCountry struct {
 	value string
-}
-
-func (v destinationVatIDOrCountry) _value() interface{} {
-	return v.value
 }
 
 func (v destinationVatIDOrCountry) index() int {
@@ -286,10 +238,6 @@ type destinationVatRate struct {
 	value float64
 }
 
-func (o destinationVatRate) _value() interface{} {
-	return o.value
-}
-
 func (o destinationVatRate) index() int {
 	return 41
 }
@@ -305,10 +253,6 @@ func (o destinationVatRate) convert() string {
 // 123 - originVatIDOrCountry -> EU-Land u. USt-IdNr. (Ursprung)
 type originVatIDOrCountry struct {
 	value string
-}
-
-func (v originVatIDOrCountry) _value() interface{} {
-	return v.value
 }
 
 func (v originVatIDOrCountry) index() int {
@@ -329,10 +273,6 @@ func (v originVatIDOrCountry) convert() string {
 // 124 - originVatRate -> EU-Steuersatz (Ursprung)
 type originVatRate struct {
 	value float64
-}
-
-func (o originVatRate) _value() interface{} {
-	return o.value
 }
 
 func (o originVatRate) index() int {
