@@ -2,6 +2,7 @@ package datev
 
 import (
 	"fmt"
+	"reflect"
 )
 
 type bookingColumn interface {
@@ -76,5 +77,5 @@ func (b *Booking) IsEqual(other Booking) bool {
 }
 
 func (b *Booking) IsEmpty() bool {
-	return b.String() == newBooking().String()
+	return reflect.DeepEqual(*b, Booking{})
 }
