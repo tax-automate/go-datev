@@ -28,7 +28,7 @@ func TestMultipleColumns(t *testing.T) {
 			name:                  "invalid currency",
 			col:                   currency{"BLUB"},
 			isValid:               false,
-			wantedConvertedString: "BLUB",
+			wantedConvertedString: "",
 		},
 		{
 			name:                  "valid currency",
