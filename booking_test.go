@@ -51,3 +51,33 @@ func TestBookingToExport(t *testing.T) {
 		}
 	}
 }
+
+func TestBooking_IsEqual(t *testing.T) {
+	builder := NewBookingBuilder()
+	tests := []struct {
+		name string
+		b1   Booking
+		b2   Booking
+		want bool
+	}{
+		{
+			name: "equal",
+			b1:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe").Build(),
+			b2:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe").Build(),
+			want: true,
+		},
+		{
+			name: "not equal",
+			b1:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe").Build(),
+			b2:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe22").Build(),
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.b1.IsEqual(tt.b2); got != tt.want {
+				t.Errorf("IsEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
