@@ -14,21 +14,12 @@ const (
 	exportedFrom = "tax-automate"
 )
 
-type _bool bool
-
-func (b _bool) String() string {
-	if b {
-		return "1"
-	}
-	return "0"
-}
-
 type ExporterConfig struct {
 	ConsultantNumber       int
 	ClientNumber           int
 	SKL                    int
 	SKR                    int
-	Fixation               _bool
+	Fixation               bool
 	SplitBookingsByDebitor bool
 }
 
@@ -148,11 +139,11 @@ func (e Exporter) createHeaderRow(fileName string) []string {
 		fmt.Sprintf("%d%02d%02d", e.period.Begin.Year(), e.period.Begin.Month(), e.period.Begin.Day()),
 		fmt.Sprintf("%d%02d%02d", e.period.End.Year(), e.period.End.Month(), e.period.End.Day()),
 		fileName,
-		personCode,              // person code
-		"1",                     // booking_type  # 1 = Fibu / 2 = Jahresabschluss
-		"",                      // accounting_purpose
-		e.cfg.Fixation.String(), // fixation  # Festschreibung 1 = Ja / 0 = Nein
-		"EUR",                   // Currency
+		personCode,                   // person code
+		"1",                          // booking_type  # 1 = Fibu / 2 = Jahresabschluss
+		"",                           // accounting_purpose
+		boolAsString(e.cfg.Fixation), // fixation  # Festschreibung 1 = Ja / 0 = Nein
+		"EUR",                        // Currency
 		"",
 		"",
 		"",
@@ -165,4 +156,11 @@ func (e Exporter) createHeaderRow(fileName string) []string {
 	}
 
 	return header
+}
+
+func boolAsString(b bool) string {
+	if b {
+		return "1"
+	}
+	return "0"
 }
