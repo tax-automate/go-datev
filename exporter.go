@@ -76,6 +76,11 @@ func (e Exporter) CreateExport(bookings []Booking, fileName string) error {
 }
 
 func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
+	err := os.MkdirAll(e.filePath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
 	fileName = fmt.Sprintf("EXTF_%s.csv", fileName)
 	path := filepath.Join(e.filePath, fileName)
 
