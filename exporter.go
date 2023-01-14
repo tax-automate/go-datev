@@ -30,13 +30,22 @@ type Exporter struct {
 	period      Period
 }
 
-func NewExporter(filePath string, cfg ExporterConfig, period Period) Exporter {
+func NewExporter(filePath string, cfg ExporterConfig, period Period) *Exporter {
 	financeYear := time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
-	return Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear}
+	return &Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear}
 }
 
-func (e Exporter) SetDeviatingFinanceYear(year, month int) {
+func (e *Exporter) SetDeviatingFinanceYear(year, month int) {
 	e.financeYear = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+}
+
+func (e *Exporter) SetPeriod(begin, end time.Time) {
+	period := Period{
+		Begin: begin,
+		End:   end,
+	}
+	e.financeYear = time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
+	e.period = period
 }
 
 type Period struct {
@@ -44,7 +53,7 @@ type Period struct {
 	End   time.Time
 }
 
-func (e Exporter) CreateExport(bookings []Booking, fileName string) error {
+func (e *Exporter) CreateExport(bookings []Booking, fileName string) error {
 	if !e.cfg.SplitBookingsByDebitor {
 		return e.CreateExportFile(bookings, fileName)
 	}
@@ -75,7 +84,7 @@ func (e Exporter) CreateExport(bookings []Booking, fileName string) error {
 	return nil
 }
 
-func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
+func (e *Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 	err := os.MkdirAll(e.filePath, os.ModePerm)
 	if err != nil {
 		return err
@@ -124,7 +133,7 @@ func (e Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 }
 
 // createHeaderRow see: https://developer.datev.de/datev/platform/de/dtvf/formate/header
-func (e Exporter) createHeaderRow(fileName string) []string {
+func (e *Exporter) createHeaderRow(fileName string) []string {
 	now := time.Now()
 	header := []string{
 		"EXTF",           // Format
