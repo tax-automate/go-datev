@@ -11,7 +11,7 @@ func TestBookingToExport(t *testing.T) {
 		return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 	}
 
-	builder := NewBookingBuilder()
+	builder := NewBookingBuilder(NewBookingLogger())
 	tests := []struct {
 		booking  Booking
 		valueMap map[int]string
@@ -53,7 +53,7 @@ func TestBookingToExport(t *testing.T) {
 }
 
 func TestBooking_IsEqual(t *testing.T) {
-	builder := NewBookingBuilder()
+	builder := NewBookingBuilder(NewBookingLogger())
 	tests := []struct {
 		name string
 		b1   Booking

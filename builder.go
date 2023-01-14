@@ -9,12 +9,12 @@ import (
 // the DATEV-Format
 type BookingBuilder struct {
 	b   *Booking
-	lgr *BookingLogger
+	lgr BookingLogger
 	cnt int
 }
 
-func NewBookingBuilder() *BookingBuilder {
-	return &BookingBuilder{b: newBooking(), lgr: NewBookingLogger()}
+func NewBookingBuilder(lgr BookingLogger) *BookingBuilder {
+	return &BookingBuilder{b: newBooking(), lgr: lgr}
 }
 
 // SetMinValues is a helper function to set minimal attributes to Booking
@@ -39,14 +39,21 @@ func (bb *BookingBuilder) Build() Booking {
 	}()
 
 	if bb.b.errs.HasErrors() {
-		bb.lgr.addError(bb.cnt, bb.b.errs.errors())
+		for i, err := range bb.b.errs {
+
+		}
+		bb.lgr.addError(bb.b.errs...)
 	}
 
 	return *bb.b
 }
 
 func (bb *BookingBuilder) setValue(data bookingColumn) *BookingBuilder {
+	if err := data.validate(); err != nil {
+		bb.lgr.addError(err)
+	}
 	bb.b.setValue(data)
+
 	return bb
 }
 

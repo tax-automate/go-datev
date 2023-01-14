@@ -1,15 +1,27 @@
 package datev
 
-type BookingLogger struct {
-	values map[int][]string
+type errToIndex = map[int]error
+
+type BookingLogger interface {
+	SetIdentifierForNextErrors(s string)
+	addError(err error)
 }
 
-func NewBookingLogger() *BookingLogger {
-	return &BookingLogger{
-		values: make(map[int][]string, 0),
+type Logger struct {
+	identifier string
+	values     map[string][]error
+}
+
+func (lgr *Logger) SetIdentifierForNextErrors(s string) {
+	lgr.identifier = s
+}
+
+func (lgr *Logger) addError(index int, err error) {
+	lgr.values[lgr.identifier] = append(lgr.values[lgr.identifier], err)
+}
+
+func NewBookingLogger() BookingLogger {
+	return &Logger{
+		values: make(map[string][]error, 0),
 	}
-}
-
-func (lgr *BookingLogger) addError(index int, errs []string) {
-	lgr.values[index] = errs
 }

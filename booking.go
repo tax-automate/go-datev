@@ -3,6 +3,7 @@ package datev
 import (
 	"fmt"
 	"reflect"
+	"testing"
 )
 
 type bookingColumn interface {
@@ -12,7 +13,7 @@ type bookingColumn interface {
 }
 
 // errorMap stores errors that occurs while settings values with datev column index as key
-type errorMap map[int]string
+type errorMap map[int]error
 
 func (em errorMap) errors() []string {
 	s := make([]string, len(em))
@@ -66,7 +67,7 @@ func newBooking() *Booking {
 func (b *Booking) setValue(data bookingColumn) {
 	// if data isn't valid, we store this information into an errorMap
 	if err := data.validate(); err != nil {
-		b.errs[data.index()] = err.Error()
+		b.errs[data.index()] = err
 	}
 
 	b.values[data.index()-1] = data // index - 1, because we create []bookingColumns with len of columns in DATEV-Format
