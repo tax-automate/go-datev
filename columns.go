@@ -250,6 +250,26 @@ func (o destinationVatRate) convert() string {
 	return toGermanFloat(fmt.Sprintf("%.2f", o.value))
 }
 
+// 115 - Leistungsdatum
+type performanceDate struct {
+	value time.Time
+}
+
+func (o performanceDate) index() int {
+	return 115
+}
+
+func (o performanceDate) validate() error {
+	if reflect.DeepEqual(o.value, time.Time{}) {
+		return errors.New("Leistungsdatum darf nicht leer sein")
+	}
+	return nil
+}
+
+func (o performanceDate) convert() string {
+	return o.value.Format("2012006")
+}
+
 // 123 - originVatIDOrCountry -> EU-Land u. USt-IdNr. (Ursprung)
 type originVatIDOrCountry struct {
 	value string

@@ -129,3 +129,7 @@ func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float6
 	bb.b.setValue(originVatRate{rate})
 	return bb
 }
+
+func (bb *BookingBuilder) SetPerformanceDate(t time.Time) *BookingBuilder {
+	return bb.setValue(performanceDate{t})
+}

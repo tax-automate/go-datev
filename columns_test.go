@@ -90,6 +90,18 @@ func TestMultipleColumns(t *testing.T) {
 			isValid:               true,
 			wantedConvertedString: "EL",
 		},
+		{
+			name:                  "performance date",
+			col:                   performanceDate{time.Date(2022, 10, 15, 0, 0, 0, 0, time.UTC)},
+			isValid:               true,
+			wantedConvertedString: "15102022",
+		},
+		{
+			name:                  "empty performance date",
+			col:                   performanceDate{time.Time{}},
+			isValid:               false,
+			wantedConvertedString: "",
+		},
 	}
 
 	for _, tt := range tests {
