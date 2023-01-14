@@ -3,6 +3,7 @@ package datev
 import (
 	"fmt"
 	"reflect"
+	"testing"
 )
 
 type bookingColumn interface {
@@ -78,4 +79,14 @@ func (b *Booking) IsEqual(other Booking) bool {
 
 func (b *Booking) IsEmpty() bool {
 	return reflect.DeepEqual(*b, Booking{})
+}
+
+func (b *Booking) ColoredComparisonForTesting(t *testing.T, other Booking) {
+	t.Helper()
+
+	for i := 0; i < len(columnNames); i++ {
+		if b.values[i] != other.values[i] {
+			t.Logf("%3d - ")
+		}
+	}
 }
