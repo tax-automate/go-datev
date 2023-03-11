@@ -250,6 +250,40 @@ func (o destinationVatRate) convert() string {
 	return toGermanFloat(fmt.Sprintf("%.2f", o.value))
 }
 
+// 48 - additionalInformationType1 -> Zusatzinformation – Art 1
+type additionalInformationType1 struct {
+	value string
+}
+
+func (o additionalInformationType1) index() int {
+	return 48
+}
+
+func (o additionalInformationType1) validate() error {
+	return nil
+}
+
+func (o additionalInformationType1) convert() string {
+	return o.value
+}
+
+// 49 - additionalInformationValue1 -> Zusatzinformation – Inhalt 1
+type additionalInformationValue1 struct {
+	value string
+}
+
+func (o additionalInformationValue1) index() int {
+	return 49
+}
+
+func (o additionalInformationValue1) validate() error {
+	return nil
+}
+
+func (o additionalInformationValue1) convert() string {
+	return o.value
+}
+
 // 115 - Leistungsdatum
 type performanceDate struct {
 	value time.Time

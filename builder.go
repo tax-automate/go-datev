@@ -133,3 +133,10 @@ func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float6
 func (bb *BookingBuilder) SetPerformanceDate(t time.Time) *BookingBuilder {
 	return bb.setValue(performanceDate{t})
 }
+
+// SetAdditionalInformation1 sets the key and value for datev column 'Zusatzinformation'
+func (bb *BookingBuilder) SetAdditionalInformation1(description, value string) *BookingBuilder {
+	bb.b.setValue(additionalInformationType1{description})
+	bb.b.setValue(additionalInformationValue1{value})
+	return bb
+}
