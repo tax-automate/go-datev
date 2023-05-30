@@ -1,6 +1,7 @@
 package datev
 
 import (
+	"github.com/google/uuid"
 	"math"
 	"time"
 )
@@ -139,4 +140,12 @@ func (bb *BookingBuilder) SetAdditionalInformation1(description, value string) *
 	bb.b.setValue(additionalInformationType1{description})
 	bb.b.setValue(additionalInformationValue1{value})
 	return bb
+}
+
+func (bb *BookingBuilder) SetDocumentLink(filePath string, uuid uuid.UUID) *BookingBuilder {
+	bb.b.relatedDocument = &relatedDocument{
+		uuid:     uuid,
+		filePath: filePath,
+	}
+	return bb.setValue(documentLink{uuid})
 }

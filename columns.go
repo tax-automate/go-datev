@@ -3,6 +3,7 @@ package datev
 import (
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"reflect"
 	"strings"
 	"time"
@@ -194,6 +195,23 @@ func (t text) validate() error {
 
 func (t text) convert() string {
 	return t.value
+}
+
+// 20 - documentLink -> Beleglink
+type documentLink struct {
+	value uuid.UUID
+}
+
+func (l documentLink) index() int {
+	return 20
+}
+
+func (l documentLink) validate() error {
+	return nil
+}
+
+func (l documentLink) convert() string {
+	return fmt.Sprintf(`BEDI "%s"`, l.value)
 }
 
 // 37 - kost -> KOST1 - Kostenstelle
