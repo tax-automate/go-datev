@@ -31,14 +31,32 @@ type xmlDocument struct {
 	FileName  string
 }
 
+// documentEntries stores the filepath of a document as value and the uuid as key
+type documentEntries map[uuid.UUID]string
+
+// add adds new entry to map if uuid not exists
+func (d documentEntries) add(k uuid.UUID, v string) {
+	if _, ok := d[k]; !ok {
+		d[k] = v
+	}
+}
+
 type xmlFactory struct {
-	entries map[uuid.UUID]string
+	entries documentEntries
+}
+
+func newXMLFactory() xmlFactory {
+	return xmlFactory{entries: make(documentEntries, 0)}
 }
 
 // Execute create a .zip archive and copy all documents, that are related to a booking into this archive
 // Also it creates the document.xml file to bind the UUIDs with the files
 // Implements the DATEV XML-online interface (https://developer.datev.de/datev/platform/de/dxso)
 func (f xmlFactory) Execute(saveDir string) error {
+	if len(f.entries) == 0 {
+		return nil
+	}
+
 	flags := os.O_WRONLY | os.O_CREATE | os.O_TRUNC
 	zipFile, err := os.OpenFile(filepath.Join(saveDir, "Belege.zip"), flags, 0644)
 	if err != nil {
