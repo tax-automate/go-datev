@@ -1,0 +1,1220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://xml.datev.de/bedi/tps/invoice/v060"
+            xmlns:de="http://xml.datev.de/DD/DE/bedi/tps/invoice/v060"
+            targetNamespace="http://xml.datev.de/bedi/tps/invoice/v060" elementFormDefault="qualified">
+    <xsd:import namespace="http://xml.datev.de/DD/DE/bedi/tps/invoice/v060"
+                schemaLocation="Belegverwaltung_online_types_v060.xsd"/>
+    <xsd:element name="invoice">
+        <xsd:annotation>
+            <xsd:documentation>: targetNamespace: Please note that the target namespace must be filled in, while
+                schemaLocation and namespace details must not be filled in!
+            </xsd:documentation>
+            <xsd:documentation>Das Element invoice ist das Root-Element.</xsd:documentation>
+            <xsd:documentation>Die Attribute des Root-Elements geben Auskunft über die elektronischen Rechnungsdaten im
+                Allgemeinen
+            </xsd:documentation>
+            <xsd:documentation>xsd:attribute generating_system: name of software manufacturers or software with which
+                the electronic invoice data was issued
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="invoice_info" minOccurs="1" maxOccurs="1"/>
+                <xsd:element ref="accounting_info" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="delivery_period" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="invoice_party" minOccurs="1" maxOccurs="1"/>
+                <xsd:element ref="invoice_recipient" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="delivery_party" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="delivery_recipient" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="supplier_party" minOccurs="1" maxOccurs="1"/>
+                <xsd:element ref="supplier_issuer" minOccurs="0" maxOccurs="1"/>
+                <xsd:element ref="payment_conditions" minOccurs="0" maxOccurs="10"/>
+                <xsd:element ref="additional_info_header" minOccurs="0" maxOccurs="1000"/>
+                <xsd:element ref="invoice_item_list" minOccurs="1" maxOccurs="5000"/>
+                <xsd:element ref="total_amount" minOccurs="1" maxOccurs="1"/>
+                <xsd:element ref="additional_info_footer" minOccurs="0" maxOccurs="1000"/>
+            </xsd:sequence>
+            <xsd:attribute name="description" type="de:p2" use="required" fixed="DATEV Import invoices">
+                <xsd:annotation>
+                    <xsd:documentation>this attribute must always contain the entry "DATEV Import invoices".
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut description enthält immer die Beschreibung des Datenimports mit dem
+                        fixen Wert “DATEV Import invoices”.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="version" type="de:p3" use="required" fixed="6.0">
+                <xsd:annotation>
+                    <xsd:documentation>current version number; current 6.0</xsd:documentation>
+                    <xsd:documentation>Das Attribut version enthält immer die aktuelle Versionsnummer.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="generator_info" type="de:p10009" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>name of company which issued the electronic invoice data</xsd:documentation>
+                    <xsd:documentation>Das Attribut generator_info enthält immer den Namen des Unternehmens das die
+                        elektronischen Daten erstellt hat.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="generating_system" type="de:p10009" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Das Attribut generating_system enthält den Namen des Software-Herstellers bzw.
+                        der Software, mit der die elektronischen Daten erstellt werden.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="xml_data" type="de:p36" use="required"
+                           fixed="Kopie nur zur Verbuchung berechtigt nicht zum Vorsteuerabzug">
+                <xsd:annotation>
+                    <xsd:documentation>information data's only for booking not for deduction of input tax
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut xml_data enthält immer den Hinweis zum Vorsteuerabzug mit dem fixen
+                        Wert „Kopie nur zur Verbuchung berechtigt nicht zum Vorsteuerabzug“.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="invoice_info">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_info enthält Informationen, die die Rechnung genauer spezifizieren.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="invoice_date" type="de:p10029" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Date of invoice</xsd:documentation>
+                    <xsd:documentation>Das Attribut invoice_date enthält das Datum der Rechnung.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="invoice_type" type="de:p4" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>this attribute must contain the value of the invoice or credit note.
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut invoice_type spezifiziert die Ausprägung der Rechnung.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="delivery_date" type="de:p10029" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Date of delivery and/or service</xsd:documentation>
+                    <xsd:documentation>Das Attribut delivery_date enthält das Datum der Lieferung und/oder Leistung. Das
+                        Liefer-/Leistungsdatum muss kleiner/gleich dem Rechnungsdatum sein. Ein Liefer-/Leistungsdatum
+                        größer dem Rechnungsdatum wird ignoriert, der Import findet trotzdem statt.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="invoice_id" type="de:p10040" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>invoice number, alphanumeric value</xsd:documentation>
+                    <xsd:documentation>Das Attribut invoice_id enthält die Rechnungsnummer, die pro Rechnungssteller
+                        eindeutig ist und von ihm nur einmal vergeben werden darf. Der Wert kann alphanumerisch sein und
+                        darf nur bestimmte Sonderzeichen enthalten.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="drawee_no" type="de:p10040" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>invoice number to which the credit note relates</xsd:documentation>
+                    <xsd:documentation>Das Attribut drawee_no enthält die Rechnungsnummer, auf die sich die Gutschrift
+                        bezieht. Der Wert kann alphanumerisch sein und darf nur bestimmte Sonderzeichen enthalten.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="order_id" type="de:p13" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>order id, alphanumeric value</xsd:documentation>
+                    <xsd:documentation>Das Attribut order_id enthält die Auftragsnummer, auf die sich die Rechnung
+                        bezieht. Der Wert kann alphanumerisch sein und darf nur bestimmte Sonderzeichen enthalten.
+                        Keine Anzeige in Belege online
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="accounting_info">
+        <xsd:annotation>
+            <xsd:documentation>The field contents are specifically for the DATEV-FIBU accounting record and have no
+                image function
+            </xsd:documentation>
+            <xsd:documentation>Das Element accounting_info enthält Kontierungsinformationen für die DATEV
+                Rechnungswesen-Programme, die in der Regel nicht aus einer Rechnung hervorgehen. Das Element
+                accounting_info gibt es auf Rechnungsebene und auf Positionsebene.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="accounting_additional_info" minOccurs="0" maxOccurs="5"/>
+            </xsd:sequence>
+            <xsd:attribute name="cost_category_id" type="de:p10041" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Cost centre identification in the accounting program</xsd:documentation>
+                    <xsd:documentation>Das Attribut cost_category_id enthält den Wert für die
+                        Kostenstellen-Identifikation der Kostenstelle 1 im DATEV Rechnungswesen-Programm.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="cost_category_id2" type="de:p10041" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Cost unit identification in the accounting program</xsd:documentation>
+                    <xsd:documentation>Das Attribut cost_category_id2 enthält den Wert für die
+                        Kostenstellen-Identifikation der Kostenstelle 2 im DATEV Rechnungswesen-Programm.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="cost_amount" type="de:p37" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Number of cost amount(s), figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut cost_amount enthält den Wert für die Kostenstellen-Menge im DATEV
+                        Rechnungswesen-Programm.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="account_no" type="de:p10028" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>impersonal account No. of goods inward account or revenue account
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut account_no enthält den Wert für das Sachkonto im DATEV
+                        Rechnungswesen-Programm. Die Länge der Kontonummer muss der Konfiguration der Sachkontennummer
+                        im DATEV Rechnungswesen-Programm und in Stammdaten online entsprechen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="exchange_rate" type="de:p14" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>conversion rate yielded when converting foreign currency invoices into euros
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut exchange_rate enthält den Umrechnungskurs, der sich bei der
+                        Umrechnung von Fremdwährungsrechnungen in Euro ergibt. Dieser Wert enthält immer sechs
+                        Nachkommastellen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="eu_tax_rate" type="de:p6" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>EU tax rate for invoices from other EU countries</xsd:documentation>
+                    <xsd:documentation>Das Attribute eu_tax_rate enthält den EU-Steuersatz, wenn eine Rechnung aus dem
+                        EU-Ausland vorliegt. Dieser Wert enthält immer zwei Nachkommastellen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bu_code" type="de:p10033" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>BU code (B=Adjustment code, U=Tax code)</xsd:documentation>
+                    <xsd:documentation>Das Attribut bu_code enthält den BU-Schlüssel im DATEV Rechnungswesen-Programm.
+                        (B = Berichtigungsschlüssel, U = Steuerschlüssel). Die zulässigen BU-Schlüssel sind der Hilfe
+                        von Belege online definiert.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="booking_text" type="de:p10036" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute booking_text: text which appears in the booking line of the booking
+                        text. Attention: booking_text max length is changed in order for former changes! Please take
+                        only 30 digits, more digits would be cut!
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut booking_text enthält den Text, der in der Buchungszeile im
+                        Buchungstext im DATEV Rechnungswesen-Programm erscheint und bei der Zuordnung über die Lerndatei
+                        als Kriterium verwendet wird. Der Buchungstext wird im Belegsatz im Feld Ware/Leistung
+                        eingetragen. Der Rechnungsordner muss so konfiguriert sein, dass Ware/Leistung im Buchungstext
+                        eingetragen wird.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="type_of_receivable" type="de:p10001" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Das Attribut type_of_receivable beinhaltet die Forderungsart.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="accounting_additional_info">
+        <xsd:annotation>
+            <xsd:documentation>Attention: accounting_additional_info maxOccurs is changed in order for former changes!
+                Please take only 1 accounting_additional_info, more would be skipped
+            </xsd:documentation>
+            <xsd:documentation>The following field contents are specifically for the DATEV-FIBU accounting record and
+                have no image function
+            </xsd:documentation>
+            <xsd:documentation>Das Element accounting_additional_info enthält individuelle
+                Kontierungs-Zusatzinformationen für die DATEV Rechnungswesen-Programme, die in der Regel nicht aus einer
+                Rechnung hervorgehen. Das Element accounting_additional_info gibt es auf Rechnungsebene und auf
+                Positionsebene. Bitte beachten Sie, dass die Verarbeitung in Belege online auf eine individuelle
+                Zusatzinformation begrenzt ist. Nur die erste Zusatzinformation an die DATEV Rechnungswesen-Programme
+                weitergegeben.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="type" type="de:p10003" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Additional infos to the DATEV-Fibu accounting specifies the charakter
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut type enthält die Art der Kontierungs-Zusatzinformationen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="content" type="de:p10013" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Additional infos to the DATEV-Fibu accounting specifies the content
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut content enthält den Inhalt der unter type definierten
+                        Kontierungszusatzinformation.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="delivery_period">
+        <xsd:annotation>
+            <xsd:documentation>Das Element delivery_period enthält den Lieferungs- bzw. Leistungszeitraum wie
+                beispielsweise bei einer Telefonrechnung.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="delivery_date_start" type="de:p10029" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Beginning of delivery/service period</xsd:documentation>
+                    <xsd:documentation>Das Attribut delivery_date_start enthält den Beginn des
+                        Lieferungs-/Leistungszeitraums
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="delivery_date_end" type="de:p10029" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>End of delivery/service period</xsd:documentation>
+                    <xsd:documentation>Das Attribut delivery_date_end enthält das Ende des
+                        Lieferungs-/Leistungszeitraums
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:complexType name="invoice_issuer">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_issuer ist ein Hilfskonstrukt zur Gliederung gleichartiger
+                Geschäftspartner-Elemente.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="invoice_participant">
+                <xsd:sequence>
+                    <xsd:element ref="booking_info_bp" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    <xsd:complexType name="invoice_participant">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_participant ist ein Hilfskonstrukt zur Gliederung gleichartiger
+                Geschäftspartner-Elemente.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element ref="address" minOccurs="1" maxOccurs="1"/>
+            <xsd:element ref="account" minOccurs="0" maxOccurs="100"/>
+        </xsd:sequence>
+        <xsd:attribute name="vat_id" type="de:p10027" use="optional">
+            <xsd:annotation>
+                <xsd:documentation>Value added tax identification; either the VAT ID No. or the tax No. must be entered,
+                    or indeed both
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="tax_no" type="de:p10023" use="optional">
+            <xsd:annotation>
+                <xsd:documentation>xsd:attribute tax_no: Tax number; either the VAT ID No. or the tax No. must be
+                    entered, or indeed both
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    <xsd:element name="booking_info_bp">
+        <xsd:annotation>
+            <xsd:documentation>The following field content is specifically for the DATEV-FIBU accounting record and has
+                no image function
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="bp_account_no" type="de:p11" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>account number of business partner from the accounting program; invoice receipt:
+                        invoice recipient’s creditor account number with; invoice issue: invoice issuer’s debtor account
+                        number
+                    </xsd:documentation>
+                    <xsd:documentation>Das Element booking_info_bp beinhaltet die Kontonummer des Geschäftspartners.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="invoice_recipient" type="invoice_participant">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_recipient beschreibt den abweichenden Rechnungsempfänger. Mindestens
+                der vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem Element
+                address bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="delivery_party" type="invoice_participant">
+        <xsd:annotation>
+            <xsd:documentation>Das Element delivery_party nennt Details über den Lieferungsempfänger. Mindestens der
+                vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem Element address
+                bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="delivery_recipient" type="invoice_participant">
+        <xsd:annotation>
+            <xsd:documentation>Das Element delivery_recipient nennt Details über den abweichenden Lieferungsempfänger.
+                Mindestens der vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem
+                Element address bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="invoice_party">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_party nennt Details über den Rechnungsempfänger. Mindestens der
+                vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem Element address
+                bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="invoice_issuer">
+                    <xsd:attribute name="ship_to_country" type="de:p10014" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>Das Attribut ship_to_country beinhaltet das Bestimmungsland im Rahmen des
+                                OSS-Verfahrens.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="supplier_party">
+        <xsd:annotation>
+            <xsd:documentation>Das Element supplier_party nennt Details über den Rechnungsaussteller. Mindestens der
+                vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem Element address
+                bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="invoice_issuer">
+                    <xsd:attribute name="ship_from_country" type="de:p10014" use="optional">
+                        <xsd:annotation>
+                            <xsd:documentation>Das Attribut ship_to_country beinhaltet das Ursprungsland im Rahmen des
+                                OSS-Verfahrens.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="supplier_issuer" type="invoice_participant">
+        <xsd:annotation>
+            <xsd:documentation>Das Element supplier_issuer nennt Details über den abweichenden Rechnungsaussteller.
+                Mindestens der vollständige Name und die Anschrift müssen angegeben werden. Diese Angaben werden in dem
+                Element address bestimmt.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:element name="address">
+        <xsd:annotation>
+            <xsd:documentation>Das Element address beinhaltet neben den allgemeinen Adressangaben noch Attribute für GLN
+                und Kundennummer.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="name" type="de:p10012" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Company/person’s name, max. 50 characters</xsd:documentation>
+                    <xsd:documentation>Das Attribut name enthält den Unternehmens-/Personennamen.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="street" type="de:p10025" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>House number and street</xsd:documentation>
+                    <xsd:documentation>Das Attribut street enthält den Straßennamen mit Hausnummer.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="boxno" type="de:p10017" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Box number</xsd:documentation>
+                    <xsd:documentation>Das Attribut boxno enthält die Postfachnummer.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="zip" type="de:p10018" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Post code, including international post codes</xsd:documentation>
+                    <xsd:documentation>Das Attribut zip enthält die Postleitzahl (auch international Postleitzahlen).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="city" type="de:p10019" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Postal town/city</xsd:documentation>
+                    <xsd:documentation>Das Attribut city enthält die Ortsbezeichnung.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="country" type="de:p10014" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>international country designation</xsd:documentation>
+                    <xsd:documentation>Das Attribut country enthält die international Länderkennung.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="phone" type="de:p10031" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Telephone number</xsd:documentation>
+                    <xsd:documentation>Das Attribut phone enthält die Telefonnummer.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="fax" type="de:p10031" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Fax number</xsd:documentation>
+                    <xsd:documentation>Das Attribut fax enthält die Faxnummer.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="email" type="de:p10032" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Email address</xsd:documentation>
+                    <xsd:documentation>Das Attribut email enthält die E-Mail-Adresse.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="gln" type="de:p5" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>GLN number</xsd:documentation>
+                    <xsd:documentation>Das Attribut gln enthält die Global Location Number (GLN).</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="party_id" type="de:p10011" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Original systems’ customer number (not always the same as the debtor/creditor
+                        No.)
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut party_id enthält die Kundennummer (entspricht nicht zwingend einer
+                        Debitoren/Kreditoren-Nummer).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="account">
+        <xsd:annotation>
+            <xsd:documentation>Das Element account beinhaltet die Bankverbindungen der Geschäftspartner.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="bank_account" type="de:p10005" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute bank_account: Bank account number</xsd:documentation>
+                    <xsd:documentation>Das Attribut bank_account enthält die Nummer des Bankkontos. Die Bankkontonummer
+                        und die Bankleitzahl müssen immer zusammen angegeben werden.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bank_code" type="de:p10007" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute bank_code: Bank sort code</xsd:documentation>
+                    <xsd:documentation>Das Attribut bank_code enthält die Nummer der Bankleitzahl. Die Bankkontonummer
+                        und die Bankleitzahl müssen immer zusammen angegeben werden. Bei einer deutschen Bankverbindung
+                        oder bei Bankverbindungen ohne Bankleitzahl muss die Bankleitzahl 8 Ziffern betragen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bank_name" type="de:p10006" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Name of bank</xsd:documentation>
+                    <xsd:documentation>Das Attribut bank_name enthält den Namen der Bank.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bank_country" type="de:p10014" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Bank’s country identification</xsd:documentation>
+                    <xsd:documentation>Das Attribut bank_country enthält die Länderkennung der Bank.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="iban" type="de:p10010" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Bank’s IBAN</xsd:documentation>
+                    <xsd:documentation>Das Attribut iban enthält den IBAN der Bank.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="swiftcode" type="de:p10030" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Bank’s Swift code</xsd:documentation>
+                    <xsd:documentation>Das Attribut swiftcode enthält den Swift-Code bzw. BIC der Bank.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="payment_conditions">
+        <xsd:annotation>
+            <xsd:documentation>Das Element payment_conditions liefert Details zu den gewährten Zahlungsbedingungen und
+                dem Einsatz von Bonus (bonus), Skonto (discount) und/oder Rabatt (rebate).
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="bonus" minOccurs="0" maxOccurs="100"/>
+                <xsd:element ref="discount" minOccurs="0" maxOccurs="100"/>
+                <xsd:element ref="rebate" minOccurs="0" maxOccurs="100"/>
+            </xsd:sequence>
+            <xsd:attribute name="due_date" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Invoice due date</xsd:documentation>
+                    <xsd:documentation>Das Attribut due_date enthält den Wert für das Fälligkeitsdatum der Rechnung.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="payment_conditions_text" type="de:p10016" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>a payment conditions text incorporated when generating the document copy
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_conditions_text enthält die Zahlungsbedingung als
+                        vollständigen Text.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="paid_at" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute paid_at: date of payment</xsd:documentation>
+                    <xsd:documentation>Das Element paid_at enthält das Datum „Gezahlt am“. Dieser Wert wird bei der
+                        Erzeugung des Belegsatzes in das Feld Gezahlt am eingetragen.
+                        Das Datum „Gezahlt am“ wird nicht an das DATEV-Rechnungswesen-Programm weitergegeben.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="payment_conditions_id" type="de:p23" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute payment_conditions_id: id of the payment-condition in the
+                        booking-programm by datev
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_conditions_id enthält die Zahlungsbedingungsnummer, die in
+                        Stammdaten online angelegt sein muss.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="payment_order" type="de:p35" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>a payment order should be created in datev unternehmen online</xsd:documentation>
+                    <xsd:documentation>payment order kennzeichnet, ob in Belege Online der Haken "Lastschrift erstellen"
+                        bzw. "Überweisung erstellen" gesetzt wird
+                    </xsd:documentation>
+                    <xsd:documentation>Achtung: der Wert "true" ist in Kombination mit der Mahn-/Zahlsperre
+                        (payment_dunning_block="true" oder payment_conditions_id="9") nicht zulässig
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="payment_dunning_block" type="de:p35" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute payment_dunning_block: block this invoice for payment and dunning
+                        in the booking-programm by datev
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_dunning_block enthält den Wert für eine Mahn-/Zahlsperre.
+                        true = eine Mahn-/Zahlsperre ist gesetzt
+                        false = keine Mahn-/Zahlsperre ist gesetzt
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>xsd:attribute currency: Currency code for the two above amounts
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="bonus">
+        <xsd:annotation>
+            <xsd:documentation>Das Element bonus beinhaltet Details zum Bonus.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="payment_date" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Date by which the bonus percentages apply</xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_date enthält das Fälligkeitsdatum, bis zu dem Bonus
+                        abgezogen werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bonus_percentage" type="de:p10020" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>percentage of bonus to deduct, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut bonus_percentage enthält den Prozentsatz des Bonus, der abgezogen
+                        werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bonus_base_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>amount from which the bonus deduction is calculated, figure given always includes
+                        decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut bonus_base_amount enthält den Wert, der als Basis für den
+                        abzuziehenden Bonus steht.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bonus_tax" type="de:p10020" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>tax rate applicable to bonus amount, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut bonus_tax enthält den Steuersatz zum Bonusbetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bonus_tax_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>amount of tax paid on bonus, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut bonus_tax_amount enthält den Steuerbetrag zum Bonusbetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="bonus_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>amount of bonus, figure given always includes decimal places</xsd:documentation>
+                    <xsd:documentation>Das Attribut bonus_amount enthält den Bonusbetrag.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Currency code for the above amounts</xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="discount">
+        <xsd:annotation>
+            <xsd:documentation>Das Element discount beinhaltet Details zum Skonto.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="payment_date" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Date by which discount percentages apply</xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_date enthält das Fälligkeitsdatum, bis zu dem Skonto
+                        abgezogen werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="discount_percentage" type="de:p10020" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>percentage discount to deduct, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut discount_percentage enthält den Prozentsatz zum Skonto, der
+                        abgezogen werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="discount_base_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Amount from which the discount deduction is calculated, figure given always
+                        includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut discount_base_amount enthält den Wert, der als Basis für den
+                        abzuziehenden Skonto steht.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="discount_tax" type="de:p10020" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Tax rate applicable to discount amount, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut discount_tax enthält den Steuersatz zum Skontobetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="discount_tax_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Amount of tax on discount, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut discount_tax_amount enthält den Steuerbetrag zum Skontobetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="discount_amount" type="de:p12" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>discount amount, figure given always includes decimal places</xsd:documentation>
+                    <xsd:documentation>Das Attribut discount_amount enthält den Skontobetrag.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Currency code for the above amounts</xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="rebate">
+        <xsd:annotation>
+            <xsd:documentation>Das Element rebate beinhaltet Details zum Rabatt.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="payment_date" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Date by which the rebate percentages apply</xsd:documentation>
+                    <xsd:documentation>Das Attribut payment_date enthält das Fälligkeitsdatum, bis zu dem Rabatt
+                        abgezogen werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="rebate_percentage" type="de:p10020" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>percentage rebate deduction, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut rebate_percentage enthält den Prozentsatz zum Rabatt, der abgezogen
+                        werden darf.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="rebate_base_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Amount from which deduction of rebate is calculated, figure given always includes
+                        decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut rebate_base_amount enthält den Wert, der als Basis für den
+                        abzuziehenden Rabatt steht.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="rebate_tax" type="de:p10020" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Tax rate for rebate amount, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut rebate_tax enthält den Steuersatz zum Rabattbetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="rebate_tax_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Tax on rebate amount, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut rebate_tax_amount enthält den Steuerbetrag zum Rabattbetrag.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="rebate_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>rebate amount, figure given always includes decimal places</xsd:documentation>
+                    <xsd:documentation>Das Attribut rebate_amount enthält den Rabattbetrag.</xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Currency code for the above amounts</xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="additional_info_header">
+        <xsd:annotation>
+            <xsd:documentation>Das Element additional_info_header enthält Zusatzfelder für Informationsinhalte, die
+                nicht in der vorgegebenen Struktur vorhanden sind.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="type" type="de:p10008" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional field for unavailable information content: the attribute Type contains
+                        the missing attribute names (structuring names)
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut type enthält den fehlenden Attributnamen (Struktierungsnamen).
+                        Enthält das Attribut type den Wert „text“, wird der Wert des Attributs content für die
+                        Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="content" type="de:p10016" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional fields for unavailable information content; the attribute Content
+                        describes the missing attribute. It contains the value.
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut content enthält den Inhalt des unter type definierten Attributs.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="invoice_item_list">
+        <xsd:annotation>
+            <xsd:documentation>Das Element invoice_item_list beinhaltet Details zu den Einzelpositionen der Rechnung.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="price_line_amount" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>Line amount: comprises the individual product price times the quantity,
+                            figure given always includes decimal places
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="accounting_info" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation>Booking information at individual line level, such as the impersonal account
+                            number or information on cost centres
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element ref="additional_info_position" minOccurs="0" maxOccurs="1000"/>
+            </xsd:sequence>
+            <xsd:attribute name="deliverynote_id" type="de:p10009" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Delivery note number</xsd:documentation>
+                    <xsd:documentation>Das Attribut deliverynote_id enthält die Lieferscheinnummer. Dieser Wert wird für
+                        die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="delivery_date" type="de:p10029" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Date of delivery if several delivery notes/deliveries are included on a single
+                        invoice
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut delivery_date enthält das Datum der Lieferung, wenn mehrere
+                        Lieferscheine/Lieferungen zu einer Rechnung zusammengefasst sind. Dieser Wert wird für die
+                        Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="product_id" type="de:p10009" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Product number</xsd:documentation>
+                    <xsd:documentation>Das Attribut product_id enthält die Artikelnummer. Dieser Wert wird für die
+                        Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="description_short" type="de:p10009" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Prodct description</xsd:documentation>
+                    <xsd:documentation>Das Attribut description_short enthält die Artikelbezeichnung, die nach § 14 Abs.
+                        4 Nr. 5 UStG anzugeben ist. Werden keinee Kontierungsinformationen angegeben, wird der Wert des
+                        Attributs description_short im Belegsatz in das Feld Ware/Leistung geschrieben. Nur die ersten
+                        40 Stellen werden verwendet. Damit diese Information als Buchungstext an das DATEV
+                        Rechnungswesen-Programm übergeben wird, muss der korrespondierende Rechnungsordner in Belege
+                        online entsprechend konfiguriert sein. Dieser Wert wird für die Erstellung der Belegkopie
+                        verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="quantity" type="de:p8" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Quantity, figure given always includes decimal places</xsd:documentation>
+                    <xsd:documentation>Das Attribut quantity enthält die Artikelmenge, die nach § 13 Abr. 4 Nr. 5 UStG
+                        anzugeben ist. Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="order_unit" type="de:p10009" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Quantity description, e.g., No. of items, litres</xsd:documentation>
+                    <xsd:documentation>Das Attribut order_unit enthält die Mengenbezeichnung, z. B. Stück, Liter. Dieser
+                        Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="net_product_price" type="de:p9" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Individual net product price to a max. of three decimal places, figure given
+                        always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut net_product_price enthält den Netto-Einzelpreis. Dieser Wert wird
+                        für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="gross_product_price" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Individual gross product price to a max. of two decimal places, figure given
+                        always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut gross_product_price enthält den Brutto-Einzelpreis. Dieser Wert wird
+                        für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="price_line_amount">
+        <xsd:annotation>
+            <xsd:documentation>Das Element price_line_amount enthält detaillierte Informationen zum Betrag der
+                Einzelpositionen der Rechnung.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="net_price_line_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Net line amount to two decimal places, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut net_price_line_amount enthält den Netto-Positionsbetrag (Einzelpreis
+                        netto x Menge). Dieser Wert wird für die Erstellung der Belegkopie verwendet. Bei Einstellung
+                        „Einzelpositionen der Rechnung buchen“ in Belege online wird, wenn kein Brutto-Positionsbetrag
+                        angegeben ist, mit dem Steuerbetrag summiert. Die Summe wird im Belegsatz in das Feld Betrag
+                        eingetragen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="gross_price_line_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Gross line amount to two decimal places, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut gross_price_line_amount enthält den Brutto-Positionsbetrag
+                        (Einzelpreis brutto x Menge). Dieser Wert wird für die Erstellung der Belegkopie verwendet. Ist
+                        die Einstellung Einzelpositionen der Rechnung buchen in Belege online selektiert, wird er im
+                        Belegsatz in das Feld Betrag eingetragen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="tax_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Tax on line amount to two decimal places, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut tax_amount enthält den Steuerbetrag zum Positionsbetrag. Dieser Wert
+                        wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="tax" type="de:p10020" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Tax rate on line amount, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut tax enthält den Steuersatz der Einzelposition. Dieser Wert wird für
+                        die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Currency amount re the above amounts, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="cause_of_tax_exemption" type="de:p10016" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>exact reason why the product is tax-exempt</xsd:documentation>
+                    <xsd:documentation>Das Attribut cause_of_tax_exemption liefert die Begründung für die
+                        Steuerbefreiung des Artikels. Enthält es einen Wert, ist der Artikel steuerbefreit. Dieser Wert
+                        wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="additional_info_position">
+        <xsd:annotation>
+            <xsd:documentation>Das Element additional_info_position enthält Zusatzfelder für Informationsinhalte, die
+                nicht in der vorgegebenen Struktur vorhanden sind.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="type" type="de:p10008" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional field for unavailable information content: the attribute Type contains
+                        the missing attribute names (structuring names)
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut type enthält den fehlenden Attributnamen (Struktierungsnamen).
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="content" type="de:p10016" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional field for unavailable information content: the attribute Content
+                        describes the missing attributes; it contains the value.
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut content enthält den Inhalt des unter type definierten Attributs.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="total_amount">
+        <xsd:annotation>
+            <xsd:documentation>Das Element total_amount enthält Details zum Rechnungsbetrag.</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="tax_line" maxOccurs="1000"/>
+            </xsd:sequence>
+            <xsd:attribute name="net_total_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Net final invoice amount, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut net_total_amount enthält den Netto-Rechnungsbetrag. Dieser Wert wird
+                        für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="total_amount_deductions" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>summary of any deductions, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut total_amount_deductions enthält die Zusammenfassung evtl.
+                        vorhandener Abschläge (z. B. Skonto, Rabatt usw.) Dieser Wert wird für die Erstellung der
+                        Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="total_amount_additions" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>any additions, figure given always includes decimal places</xsd:documentation>
+                    <xsd:documentation>Das Attribut total_amount_additions enthält die Zusammenfassung evtl. Vorhandener
+                        Zuschläge. Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="total_shipment_costs" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>summary of any shipment costs, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut total_shipment_costs enthält die Zusammenfassung evtl. Vorhandener
+                        Frachtkosten. Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="total_gross_amount_excluding_third-party_collection" type="de:p10002" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>gross invoice amount excluding turnover collected on third-party account/for
+                        another company, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut total_gross_amount_excluding_third-party_collection enthält den
+                        Brutto-Rechnungsbetrag ohne Umsätze, die im fremden Namen bzw. für ein anderes Unternehmen
+                        eingezogen werden. Dieser Wert wird für die Erstellung der Belegkopie verwendet. Dieser Betrag
+                        wird im Belegsatz in das Feld Betrag eingetragen
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="total_gross_amount_including_third-party_collection" type="de:p10002" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>gross invoice amount including turnover collected on third-party account/for
+                        another company, figure given always includes decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut total_gross_amount_including_third-party_collection enthält den
+                        Brutto-Rechnungsbetrag mit Umsätzen, die im fremden Namen bzw. für ein anderes Unternehmen
+                        eingezogen werden. Dieser Wert wird für die Erstellung der Belegkopie verwendet. Wenn dieser
+                        Wert angegeben ist, wird er anstelle des total_gross_amount_excluding_third-party_collection im
+                        Belegsatz in das Feld Betrag eingetragen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Currency code for the above amounts</xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="tax_line">
+        <xsd:annotation>
+            <xsd:documentation>Das Element tax_line enthält Informationen zur Steuerposition im Zusammenhang mit dem
+                Rechnungsbetrag.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="net_price_line_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Net amount of overall invoice per tax rate, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut net_price_line_amount enthält den Nettobetrag pro Steuersatz der
+                        Rechnung. Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="gross_price_line_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Gross amount of overall invoice per tax rate, figure given always includes
+                        decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut gross_price_line_amount enthält den Bruttobetrag pro Steuersatz der
+                        Rechnung. Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="tax" type="de:p10020" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>Tax rate or rates applying to overall invoice, figure given always includes
+                        decimal places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut tax enthält den Steuersatz bzw. die Steuersätze der Rechnung. Dieser
+                        Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="tax_amount" type="de:p7" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Tax amount for overall invoice per tax rate, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut tax_amount enthält den Steuerbetrag pro Steuersatz der Rechnung.
+                        Dieser Wert wird für die Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="currency" type="de:p1" use="optional">
+                <xsd:annotation>
+                    <xsd:documentation>Currency amount for the above amounts, figure given always includes decimal
+                        places
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut currency enthält den Währungscode zu den Beträgen.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="additional_info_footer">
+        <xsd:annotation>
+            <xsd:documentation>Das Element additional_info_footer enthält Zusatzfelder für Informationsinhalte, die
+                nicht in der vorgegebenen Struktur vorhanden sind.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="type" type="de:p10008" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional field for unavailable information content: the attribute Type contains
+                        the missing attribute names (structuring names)
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut type enthält den fehlenden Attributnamen (Struktierungsnamen).
+                        Enthält das Attribut type den Wert „text“, wird der Wert des Attributs content für die
+                        Erstellung der Belegkopie verwendet.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="content" type="de:p10016" use="required">
+                <xsd:annotation>
+                    <xsd:documentation>additional field for unavailable information content: the attribute Content
+                        describes the missing attributes; it contains the value.
+                    </xsd:documentation>
+                    <xsd:documentation>Das Attribut content enthält den Inhalt des unter type definierten Attributs.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
