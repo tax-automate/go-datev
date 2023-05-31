@@ -2,6 +2,7 @@ package datev
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"reflect"
 )
 
@@ -30,8 +31,14 @@ func (em errorMap) HasErrors() bool {
 }
 
 type Booking struct {
-	values []bookingColumn
-	errs   errorMap
+	values          []bookingColumn
+	relatedDocument *relatedDocument
+	errs            errorMap
+}
+
+type relatedDocument struct {
+	uuid     uuid.UUID
+	filePath string
 }
 
 func (b *Booking) String() string {

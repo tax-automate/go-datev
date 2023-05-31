@@ -1,6 +1,7 @@
 package datev
 
 import (
+	"github.com/google/uuid"
 	"math"
 	"time"
 )
@@ -139,4 +140,14 @@ func (bb *BookingBuilder) SetAdditionalInformation1(description, value string) *
 	bb.b.setValue(additionalInformationType1{description})
 	bb.b.setValue(additionalInformationValue1{value})
 	return bb
+}
+
+// SetDocumentLink set a document link to link a booking to a document in DUO (or something else)
+// the UUID is also used to create the document.xml file for the DATEV XML interface
+func (bb *BookingBuilder) SetDocumentLink(filePath string, uuid uuid.UUID) *BookingBuilder {
+	bb.b.relatedDocument = &relatedDocument{
+		uuid:     uuid,
+		filePath: filePath,
+	}
+	return bb.setValue(documentLink{uuid})
 }
