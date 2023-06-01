@@ -82,7 +82,7 @@ func (f xmlFactory) Execute(saveDir string) error {
 		}
 	}
 
-	tmpl, err := template.ParseFiles("./xml_datev.xml")
+	tmpl, err := template.New("XML").Parse(xmlTemplate)
 	if err != nil {
 		return err
 	}
@@ -122,3 +122,16 @@ func addFileToZipArchive(filePath string, w *zip.Writer) error {
 	}
 	return nil
 }
+
+const xmlTemplate = `<?xml version="1.0" encoding="utf-8"?>
+<archive xmlns="http://xml.datev.de/bedi/tps/document/v06.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.datev.de/bedi/tps/document/v06.0 Document_v060.xsd" version="6.0"
+         generatingSystem="{{ .GeneratingSystem }}">
+    <header>
+        <date>{{ .Date }}</date>
+    </header>
+    <content>{{ range .Documents }}
+        <document guid="{{ .GUID }}" processID="{{ .ProcessID }}" type="{{ .Type }}">
+            <extension xsi:type="File" name="{{ .FileName }}"/>
+        </document>{{ end }}
+    </content>
+</archive>`
