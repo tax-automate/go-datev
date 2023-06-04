@@ -144,14 +144,6 @@ func (bb *BookingBuilder) SetAdditionalInformation1(description, value string) *
 
 // SetDocumentLink set a document link to link a booking to a document in DUO (or something else)
 // the UUID is also used to create the document.xml file for the DATEV XML interface
-//
-//	If an existing document should link to a booking, keep filePath empty
-func (bb *BookingBuilder) SetDocumentLink(uuid uuid.UUID, filePath string) *BookingBuilder {
-	if filePath != "" {
-		bb.b.relatedDocument = &relatedDocument{
-			uuid:     uuid,
-			filePath: filePath,
-		}
-	}
+func (bb *BookingBuilder) SetDocumentLink(uuid uuid.UUID) *BookingBuilder {
 	return bb.setValue(documentLink{uuid})
 }

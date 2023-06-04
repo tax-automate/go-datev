@@ -28,12 +28,11 @@ type Exporter struct {
 	cfg         ExporterConfig
 	financeYear time.Time
 	period      Period
-	xmlFactory  xmlFactory
 }
 
 func NewExporter(filePath string, cfg ExporterConfig, period Period) *Exporter {
 	financeYear := time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
-	return &Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear, xmlFactory: newXMLFactory()}
+	return &Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear}
 }
 
 func (e *Exporter) SetDeviatingFinanceYear(year, month int) {
@@ -129,15 +128,6 @@ func (e *Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 		if err != nil {
 			return fmt.Errorf("error %q while creating booking with value %v", err.Error(), booking.String())
 		}
-
-		if booking.relatedDocument != nil {
-			e.xmlFactory.entries.add(booking.relatedDocument.uuid, booking.relatedDocument.filePath)
-		}
-	}
-
-	err = e.xmlFactory.Execute(e.filePath)
-	if err != nil {
-		return err
 	}
 
 	return nil
