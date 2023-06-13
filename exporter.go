@@ -3,7 +3,6 @@ package datev
 import (
 	"encoding/csv"
 	"fmt"
-	"math"
 	"os"
 	"path/filepath"
 	"time"
@@ -30,67 +29,83 @@ type Exporter struct {
 	period      Period
 }
 
-func NewExporter(filePath string, cfg ExporterConfig, period Period) *Exporter {
-	financeYear := time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
-	return &Exporter{filePath: filePath, cfg: cfg, period: period, financeYear: financeYear}
+func NewExporter(filePath string, cfg ExporterConfig) *Exporter {
+	return &Exporter{filePath: filePath, cfg: cfg}
 }
 
 func (e *Exporter) SetDeviatingFinanceYear(year, month int) {
 	e.financeYear = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 }
 
-func (e *Exporter) SetPeriod(begin, end time.Time) {
-	period := Period{
-		Begin: begin,
-		End:   end,
-	}
-	e.financeYear = time.Date(period.Begin.Year(), 1, 1, 0, 0, 0, 0, time.UTC)
-	e.period = period
-}
-
 type Period struct {
-	Begin time.Time
-	End   time.Time
+	month int
+	year  int
 }
 
+func (p Period) String() string {
+	return fmt.Sprintf("%02d-%d", p.month, p.year)
+}
+
+func (p Period) Begin() time.Time {
+	return time.Date(p.year, time.Month(p.month), 1, 0, 0, 0, 0, time.UTC)
+}
+
+func (p Period) End() time.Time {
+	return time.Date(p.year, time.Month(p.month), 1, 0, 0, 0, 0, time.UTC).AddDate(0, 1, -1)
+}
+
+// CreateExport creates an export file in DATEV-Format
 func (e *Exporter) CreateExport(bookings []Booking, fileName string) error {
-	if !e.cfg.SplitBookingsByDebitor {
-		return e.CreateExportFile(bookings, fileName)
-	}
-
-	debitorBookings := make([]Booking, 0)
-	otherBookings := make([]Booking, 0)
-	minDebitorAcc := int(math.Pow(10, float64(e.cfg.SKL)))
-	for _, booking := range bookings {
-		acc := booking.values[6].(account).value
-		cAcc := booking.values[7].(cAccount).value
-
-		if acc >= minDebitorAcc || cAcc >= minDebitorAcc {
-			debitorBookings = append(debitorBookings, booking)
-		} else {
-			otherBookings = append(otherBookings, booking)
-		}
-	}
-
-	err := e.CreateExportFile(debitorBookings, fileName+" Debitoren")
-	if err != nil {
-		return err
-	}
-
-	err = e.CreateExportFile(otherBookings, fileName)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// CreateExportFile creates an export file in DATEV-Format
-func (e *Exporter) CreateExportFile(bookings []Booking, fileName string) error {
 	err := os.MkdirAll(e.filePath, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
+	sortedBookings := sortBookingsByPeriod(bookings)
+	mainPeriod := getMainPeriod(sortedBookings)
+	for period, bookingsForFile := range sortedBookings {
+		e.period = period
+		e.financeYear = time.Date(period.year, time.Month(period.month), 1, 0, 0, 0, 0, time.UTC)
+
+		if mainPeriod != period {
+			fileName = fmt.Sprintf("%s - Zeitraum %s", fileName, period.String())
+		}
+		err = e.writeFile(bookingsForFile, fileName)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// getMainPeriod looks what period have the most bookings. This Period will be the main period
+func getMainPeriod(data map[Period][]Booking) Period {
+	var p Period
+	var maxLength int
+	for period, bookings := range data {
+		if len(bookings) > maxLength {
+			maxLength = len(bookings)
+			p = period
+		}
+	}
+
+	return p
+}
+
+func sortBookingsByPeriod(bookings []Booking) map[Period][]Booking {
+	output := make(map[Period][]Booking, 0)
+	for _, booking := range bookings {
+		p := booking.Period
+		if _, ok := output[p]; !ok {
+			output[p] = []Booking{}
+		}
+		output[p] = append(output[p], booking)
+	}
+	return output
+}
+
+func (e *Exporter) writeFile(bookings []Booking, fileName string) error {
 	fileName = fmt.Sprintf("EXTF_%s.csv", fileName)
 	path := filepath.Join(e.filePath, fileName)
 
@@ -151,8 +166,8 @@ func (e *Exporter) createHeaderRow(fileName string) []string {
 		fmt.Sprintf("%d", e.cfg.ClientNumber),                                                       // Mandantennummer
 		fmt.Sprintf("%d%02d%02d", e.financeYear.Year(), e.financeYear.Month(), e.financeYear.Day()), // Finanzjahr
 		fmt.Sprintf("%d", e.cfg.SKL),                                                                // SKL
-		fmt.Sprintf("%d%02d%02d", e.period.Begin.Year(), e.period.Begin.Month(), e.period.Begin.Day()),
-		fmt.Sprintf("%d%02d%02d", e.period.End.Year(), e.period.End.Month(), e.period.End.Day()),
+		fmt.Sprintf("%d%02d%02d", e.period.year, e.period.month, e.period.Begin().Day()),
+		fmt.Sprintf("%d%02d%02d", e.period.year, e.period.month, e.period.End().Day()),
 		fileName,
 		personCode,                   // person code
 		"1",                          // booking_type  # 1 = Fibu / 2 = Jahresabschluss

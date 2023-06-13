@@ -3,6 +3,7 @@ package datev
 import (
 	"fmt"
 	"reflect"
+	"time"
 )
 
 type bookingColumn interface {
@@ -32,6 +33,14 @@ func (em errorMap) HasErrors() bool {
 type Booking struct {
 	values []bookingColumn
 	errs   errorMap
+	Period Period
+}
+
+func (b *Booking) setPeriod(t time.Time) {
+	b.Period = Period{
+		month: int(t.Month()),
+		year:  t.Year(),
+	}
 }
 
 func (b *Booking) String() string {
