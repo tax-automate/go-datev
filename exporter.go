@@ -15,12 +15,12 @@ const (
 )
 
 type ExporterConfig struct {
-	ConsultantNumber       int
-	ClientNumber           int
-	SKL                    int
-	SKR                    int
-	Fixation               bool
-	SplitBookingsByDebitor bool
+	ConsultantNumber int
+	ClientNumber     int
+	SKL              int
+	SKR              int
+	Fixation         bool
+	MainPeriod       Period
 }
 
 type Exporter struct {
@@ -68,12 +68,11 @@ func (e *Exporter) CreateExport(bookings []Booking, fileName string) error {
 	}
 
 	sortedBookings := sortBookingsByPeriod(bookings)
-	mainPeriod := getMainPeriod(sortedBookings)
 	for period, bookingsForFile := range sortedBookings {
 		e.period = period
 		e.financeYear = time.Date(period.year, time.Month(period.month), 1, 0, 0, 0, 0, time.UTC)
 
-		if mainPeriod != period {
+		if e.cfg.MainPeriod != period {
 			fileName = fmt.Sprintf("%s - Zeitraum %s", fileName, period.String())
 		}
 		err = e.writeFile(bookingsForFile, fileName)
@@ -83,20 +82,6 @@ func (e *Exporter) CreateExport(bookings []Booking, fileName string) error {
 	}
 
 	return nil
-}
-
-// getMainPeriod looks what period have the most bookings. This Period will be the main period
-func getMainPeriod(data map[Period][]Booking) Period {
-	var p Period
-	var maxLength int
-	for period, bookings := range data {
-		if len(bookings) > maxLength {
-			maxLength = len(bookings)
-			p = period
-		}
-	}
-
-	return p
 }
 
 func sortBookingsByPeriod(bookings []Booking) map[Period][]Booking {
