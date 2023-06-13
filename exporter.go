@@ -141,7 +141,7 @@ func (e *Exporter) createHeaderRow(fileName string) []string {
 		"700",            // Versions Nr
 		"21",             // category
 		"Buchungsstapel", // format name
-		"9",              // Format version
+		"12",             // Format version
 		fmt.Sprintf("%d%02d%02d%02d%02d%02d000", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()), // created at
 		"",           // Imported (must be empty)
 		"RE",         // origin
