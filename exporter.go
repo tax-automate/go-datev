@@ -3,6 +3,7 @@ package datev
 import (
 	"encoding/csv"
 	"fmt"
+	"github.com/google/uuid"
 	"os"
 	"path/filepath"
 	"time"
@@ -27,14 +28,19 @@ type Exporter struct {
 	cfg         ExporterConfig
 	financeYear time.Time
 	period      Period
+	xmlFactory  XMLFactory
 }
 
 func NewExporter(filePath string, cfg ExporterConfig) *Exporter {
-	return &Exporter{filePath: filePath, cfg: cfg}
+	return &Exporter{filePath: filePath, cfg: cfg, xmlFactory: NewXMLFactory()}
 }
 
 func (e *Exporter) SetDeviatingFinanceYear(year, month int) {
 	e.financeYear = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
+}
+
+func (e *Exporter) AddXmlDocument(uid uuid.UUID, filePath string) {
+	e.xmlFactory.AddDocument(uid, filePath)
 }
 
 type Period struct {
