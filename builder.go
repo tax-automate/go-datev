@@ -86,6 +86,7 @@ func (bb *BookingBuilder) SetBuKey(n int) *BookingBuilder {
 
 // SetDate set the value for the datev column 'Belegdatum'
 func (bb *BookingBuilder) SetDate(t time.Time) *BookingBuilder {
+	bb.b.setPeriod(t)
 	return bb.setValue(date{value: t})
 }
 
@@ -132,6 +133,7 @@ func (bb *BookingBuilder) SetOriginEuInformation(countryCode string, rate float6
 }
 
 func (bb *BookingBuilder) SetPerformanceDate(t time.Time) *BookingBuilder {
+	bb.b.setPeriod(t)
 	return bb.setValue(performanceDate{t})
 }
 

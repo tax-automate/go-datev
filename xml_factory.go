@@ -15,6 +15,9 @@ const (
 	// those constants can use as 'type' or 'processID'
 	bookingRelevant int = 1
 	archiveRelevant int = 2
+
+	incomingInvoices = 1
+	outgoingInvoices = 2
 )
 
 // xmlData holds all information that are parsed into xml template
@@ -69,7 +72,7 @@ func (f XMLFactory) Execute(saveDir string) error {
 		docs = append(docs, xmlDocument{
 			GUID:      uid,
 			ProcessID: bookingRelevant,
-			Type:      bookingRelevant,
+			Type:      outgoingInvoices,
 			FileName:  filepath.Base(filePath),
 		})
 
