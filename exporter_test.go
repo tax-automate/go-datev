@@ -21,12 +21,12 @@ func Test_sortBookingsByPeriod(t *testing.T) {
 			},
 			want: map[Period][]Booking{
 				Period{
-					month: 3,
-					year:  2023,
+					Month: 3,
+					Year:  2023,
 				}: {builder.SetDate(time.Date(2023, 3, 15, 0, 0, 0, 0, time.UTC)).Build()},
 				Period{
-					month: 4,
-					year:  2023,
+					Month: 4,
+					Year:  2023,
 				}: {builder.SetDate(time.Date(2023, 4, 15, 0, 0, 0, 0, time.UTC)).Build()},
 			},
 		},
