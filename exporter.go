@@ -44,20 +44,20 @@ func (e *Exporter) AddXmlDocument(uid uuid.UUID, filePath string) {
 }
 
 type Period struct {
-	month int
-	year  int
+	Month int
+	Year  int
 }
 
 func (p Period) String() string {
-	return fmt.Sprintf("%02d-%d", p.month, p.year)
+	return fmt.Sprintf("%02d-%d", p.Month, p.Year)
 }
 
 func (p Period) Begin() time.Time {
-	return time.Date(p.year, time.Month(p.month), 1, 0, 0, 0, 0, time.UTC)
+	return time.Date(p.Year, time.Month(p.Month), 1, 0, 0, 0, 0, time.UTC)
 }
 
 func (p Period) End() time.Time {
-	return time.Date(p.year, time.Month(p.month), 1, 0, 0, 0, 0, time.UTC).AddDate(0, 1, -1)
+	return time.Date(p.Year, time.Month(p.Month), 1, 0, 0, 0, 0, time.UTC).AddDate(0, 1, -1)
 }
 
 // CreateExport creates an export file in DATEV-Format
@@ -70,7 +70,7 @@ func (e *Exporter) CreateExport(bookings []Booking, fileName string) error {
 	sortedBookings := sortBookingsByPeriod(bookings)
 	for period, bookingsForFile := range sortedBookings {
 		e.period = period
-		e.financeYear = time.Date(period.year, time.Month(period.month), 1, 0, 0, 0, 0, time.UTC)
+		e.financeYear = time.Date(period.Year, time.Month(period.Month), 1, 0, 0, 0, 0, time.UTC)
 
 		if e.cfg.MainPeriod != period {
 			fileName = fmt.Sprintf("%s - Zeitraum %s", fileName, period.String())
@@ -157,8 +157,8 @@ func (e *Exporter) createHeaderRow(fileName string) []string {
 		fmt.Sprintf("%d", e.cfg.ClientNumber),                                                       // Mandantennummer
 		fmt.Sprintf("%d%02d%02d", e.financeYear.Year(), e.financeYear.Month(), e.financeYear.Day()), // Finanzjahr
 		fmt.Sprintf("%d", e.cfg.SKL),                                                                // SKL
-		fmt.Sprintf("%d%02d%02d", e.period.year, e.period.month, e.period.Begin().Day()),
-		fmt.Sprintf("%d%02d%02d", e.period.year, e.period.month, e.period.End().Day()),
+		fmt.Sprintf("%d%02d%02d", e.period.Year, e.period.Month, e.period.Begin().Day()),
+		fmt.Sprintf("%d%02d%02d", e.period.Year, e.period.Month, e.period.End().Day()),
 		fileName,
 		personCode,                   // person code
 		"1",                          // booking_type  # 1 = Fibu / 2 = Jahresabschluss

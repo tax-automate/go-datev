@@ -38,8 +38,8 @@ type Booking struct {
 
 func (b *Booking) setPeriod(t time.Time) {
 	b.Period = Period{
-		month: int(t.Month()),
-		year:  t.Year(),
+		Month: int(t.Month()),
+		Year:  t.Year(),
 	}
 }
 
