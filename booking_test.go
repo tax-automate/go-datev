@@ -54,6 +54,11 @@ func TestBookingToExport(t *testing.T) {
 
 func TestBooking_IsEqual(t *testing.T) {
 	builder := NewBookingBuilder()
+	periodBooking := func() Booking {
+		bkg := builder.SetDate(time.Date(2023, 5, 15, 0, 0, 0, 0, time.UTC)).Build()
+		bkg.setPeriod(time.Date(2022, 12, 31, 0, 0, 0, 0, time.UTC))
+		return bkg
+	}
 	tests := []struct {
 		name string
 		b1   Booking
@@ -70,6 +75,12 @@ func TestBooking_IsEqual(t *testing.T) {
 			name: "not equal",
 			b1:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe").Build(),
 			b2:   builder.SetAmount(-123).SetKOST(999).SetVatID("DE999999999").SetText("Jon Doe22").Build(),
+			want: false,
+		},
+		{
+			name: "Different period",
+			b1:   builder.SetDate(time.Date(2023, 5, 15, 0, 0, 0, 0, time.UTC)).Build(),
+			b2:   periodBooking(),
 			want: false,
 		},
 	}

@@ -82,7 +82,15 @@ func (b *Booking) setValue(data bookingColumn) {
 }
 
 func (b *Booking) IsEqual(other Booking) bool {
-	return b.String() == other.String()
+	if b.String() != other.String() {
+		return false
+	}
+
+	if b.Period.String() != other.Period.String() {
+		return false
+	}
+
+	return true
 }
 
 func (b *Booking) IsEmpty() bool {
